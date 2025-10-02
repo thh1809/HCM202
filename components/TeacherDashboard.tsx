@@ -89,46 +89,46 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
   return (
     <div className="space-y-6">
       {/* Header với thống kê */}
-      <div className="glass border border-white/20 rounded-2xl p-6">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-white gradient-text">
-            📊 Dashboard Quản lý Câu hỏi
-          </h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                📊 Dashboard Quản lý Câu hỏi
+              </h2>
           <button
             onClick={onRefresh}
-            className="px-4 py-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 rounded-xl hover:bg-blue-500/30 transition-all duration-300"
+            className="px-4 py-2 bg-blue-100 border border-blue-200 text-blue-700 rounded-xl hover:bg-blue-200 transition-all duration-300"
           >
             🔄 Làm mới
           </button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="glass border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-white">{questions.length}</div>
-            <div className="text-sm text-white/70">Tổng câu hỏi</div>
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-gray-900">{questions.length}</div>
+            <div className="text-sm text-gray-600">Tổng câu hỏi</div>
           </div>
-          <div className="glass border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-orange-400">{questions.filter(q => !q.answered).length}</div>
-            <div className="text-sm text-white/70">Chờ trả lời</div>
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-orange-600">{questions.filter(q => !q.answered).length}</div>
+            <div className="text-sm text-orange-700">Chờ trả lời</div>
           </div>
-          <div className="glass border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-green-400">{questions.filter(q => q.answered).length}</div>
-            <div className="text-sm text-white/70">Đã trả lời</div>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{questions.filter(q => q.answered).length}</div>
+            <div className="text-sm text-green-700">Đã trả lời</div>
           </div>
         </div>
       </div>
 
       {/* Bộ lọc và tìm kiếm */}
-      <div className="glass border border-white/20 rounded-2xl p-6">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
               placeholder="Tìm kiếm câu hỏi, sinh viên..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 glass border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           
@@ -136,7 +136,7 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="px-4 py-3 glass border border-white/20 rounded-xl text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="px-4 py-3 border border-gray-300 rounded-xl text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Tất cả</option>
               <option value="pending">Chờ trả lời</option>
@@ -145,7 +145,7 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
             
             <button
               onClick={() => setSortBy(sortBy === 'newest' ? 'oldest' : 'newest')}
-              className="px-4 py-3 glass border border-white/20 rounded-xl text-white hover:bg-white/10 transition-all duration-300 flex items-center space-x-2"
+              className="px-4 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 flex items-center space-x-2"
             >
               {sortBy === 'newest' ? <SortDesc className="h-4 w-4" /> : <SortAsc className="h-4 w-4" />}
               <span className="hidden sm:inline">Sắp xếp</span>
@@ -157,12 +157,12 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
       {/* Danh sách câu hỏi */}
       <div className="space-y-4">
         {filteredQuestions.length === 0 ? (
-          <div className="glass border border-white/20 rounded-2xl p-12 text-center">
-            <MessageSquare className="h-16 w-16 text-white/40 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-white mb-2">
+          <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center shadow-sm">
+            <MessageSquare className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
               Không có câu hỏi nào
             </h3>
-            <p className="text-white/60">
+            <p className="text-gray-600">
               {searchTerm || filterStatus !== 'all' 
                 ? 'Không tìm thấy câu hỏi phù hợp với bộ lọc'
                 : 'Sinh viên chưa gửi câu hỏi nào'
@@ -173,7 +173,7 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
           filteredQuestions.map((question) => (
             <div
               key={question.id}
-              className="glass border border-white/20 rounded-2xl p-6 hover:bg-white/5 transition-all duration-300 card-hover cursor-pointer"
+              className="bg-white border border-gray-200 rounded-2xl p-6 hover:bg-gray-50 transition-all duration-300 card-hover cursor-pointer shadow-sm"
               onClick={() => setSelectedQuestion(question)}
             >
               <div className="flex items-start justify-between">
@@ -183,8 +183,8 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
                       <User className="h-4 w-4 text-white" />
                     </div>
                     <div>
-                      <span className="font-medium text-white">{question.studentName}</span>
-                      <span className="text-white/60 ml-2">({question.studentId})</span>
+                      <span className="font-medium text-gray-900">{question.studentName}</span>
+                      <span className="text-gray-600 ml-2">({question.studentId})</span>
                     </div>
                     {question.answered ? (
                       <CheckCircle className="h-5 w-5 text-green-400" />
@@ -193,11 +193,11 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
                     )}
                   </div>
                   
-                  <p className="text-white mb-3 line-clamp-2">
+                  <p className="text-gray-700 mb-3 line-clamp-2">
                     {question.question}
                   </p>
                   
-                  <div className="flex items-center space-x-4 text-sm text-white/60">
+                  <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center space-x-1">
                       <Calendar className="h-4 w-4" />
                       <span>{formatDate(question.timestamp)}</span>
@@ -209,8 +209,8 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
                 
                 <div className={`px-3 py-1 rounded-full text-xs font-medium ${
                   question.answered 
-                    ? 'bg-green-500/20 text-green-300 border border-green-400/30' 
-                    : 'bg-orange-500/20 text-orange-300 border border-orange-400/30'
+                    ? 'bg-green-100 text-green-700 border border-green-200' 
+                    : 'bg-orange-100 text-orange-700 border border-orange-200'
                 }`}>
                   {question.answered ? 'Đã trả lời' : 'Chờ trả lời'}
                 </div>
@@ -223,30 +223,30 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
       {/* Modal trả lời câu hỏi */}
       {selectedQuestion && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass border border-white/20 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-white mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
                 💬 Trả lời câu hỏi
               </h3>
               
-              <div className="mb-6 p-4 glass border border-white/20 rounded-xl">
+              <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
                 <div className="flex items-center space-x-2 mb-2">
-                  <User className="h-4 w-4 text-white/60" />
-                  <span className="font-medium text-white">{selectedQuestion.studentName}</span>
-                  <span className="text-white/60">({selectedQuestion.studentId})</span>
+                  <User className="h-4 w-4 text-gray-500" />
+                  <span className="font-medium text-gray-900">{selectedQuestion.studentName}</span>
+                  <span className="text-gray-600">({selectedQuestion.studentId})</span>
                 </div>
-                <p className="text-white">{selectedQuestion.question}</p>
+                <p className="text-gray-700">{selectedQuestion.question}</p>
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Câu trả lời của bạn
                 </label>
                 <textarea
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   rows={6}
-                  className="w-full px-4 py-3 glass border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                   placeholder="Nhập câu trả lời chi tiết..."
                 />
               </div>
@@ -257,7 +257,7 @@ export default function TeacherDashboard({ questions, onAnswerSubmit, onRefresh 
                     setSelectedQuestion(null)
                     setAnswer('')
                   }}
-                  className="flex-1 px-4 py-3 border border-white/20 text-white rounded-xl hover:bg-white/10 transition-all duration-300"
+                  className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300"
                 >
                   Hủy
                 </button>

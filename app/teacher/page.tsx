@@ -72,17 +72,17 @@ export default function TeacherPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Đang tải dashboard...</p>
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-700 text-lg">Đang tải dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar 
         isOpen={sidebarOpen} 
@@ -97,7 +97,7 @@ export default function TeacherPage() {
           onUploadClick={() => setIsUploadModalOpen(true)}
         />
         
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
           <TeacherDashboard 
             questions={questions}
             onAnswerSubmit={handleAnswerSubmit}

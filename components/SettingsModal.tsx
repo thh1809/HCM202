@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Settings, Save, RefreshCw, Bell, Shield, Palette } from 'lucide-react'
 
 interface SettingsModalProps {
@@ -20,13 +20,49 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   const [saving, setSaving] = useState(false)
 
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    if (isOpen) {
+      const savedSettings = localStorage.getItem('app-settings')
+      if (savedSettings) {
+        try {
+          const parsed = JSON.parse(savedSettings)
+          setSettings(prev => ({ ...prev, ...parsed }))
+        } catch (error) {
+          console.error('Error parsing saved settings:', error)
+        }
+      }
+    }
+  }, [isOpen])
+
   const handleSave = async () => {
     setSaving(true)
-    // Mock save - trong thực tế sẽ lưu vào localStorage hoặc API
-    setTimeout(() => {
+    try {
+      // Save to localStorage
+      localStorage.setItem('app-settings', JSON.stringify(settings))
+      
+      // Apply theme if changed
+      if (settings.theme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else if (settings.theme === 'light') {
+        document.documentElement.classList.remove('dark')
+      } else {
+        // Auto theme - follow system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      }
+      
+      setTimeout(() => {
+        setSaving(false)
+        onClose()
+      }, 1000)
+    } catch (error) {
+      console.error('Error saving settings:', error)
       setSaving(false)
-      onClose()
-    }, 1000)
+    }
   }
 
   const handleChange = (key: string, value: any) => {

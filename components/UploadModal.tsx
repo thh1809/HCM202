@@ -6,9 +6,10 @@ import { X, Upload, FileText, AlertCircle, CheckCircle } from 'lucide-react'
 interface UploadModalProps {
   isOpen: boolean
   onClose: () => void
+  onUploadSuccess?: () => void
 }
 
-export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
+export default function UploadModal({ isOpen, onClose, onUploadSuccess }: UploadModalProps) {
   const [dragActive, setDragActive] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -75,6 +76,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
       if (response.ok) {
         setUploadStatus('success')
         setUploadMessage(`Tải lên thành công! Đã xử lý ${data.pages || 0} trang.`)
+        onUploadSuccess?.()
       } else {
         setUploadStatus('error')
         setUploadMessage(data.error || 'Có lỗi xảy ra khi tải lên file')

@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
+import { readFile, writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
+
+// Mock database - trong thực tế sẽ sử dụng database thật
+let documents: Array<{
+  id: string
+  name: string
+  originalName: string
+  size: number
+  type: string
+  uploadDate: Date
+  filePath: string
+  textContent?: string
+}> = []
+
+export async function GET() {
+  try {
+    return NextResponse.json({ documents })
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Có lỗi xảy ra khi lấy danh sách tài liệu' },
+      { status: 500 }
+    )
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -84,9 +107,23 @@ export async function POST(request: NextRequest) {
     const textFilePath = join(uploadsDir, textFileName)
     await writeFile(textFilePath, textContent, 'utf-8')
 
+    // Add to documents list
+    const newDocument = {
+      id: Date.now().toString(),
+      name: file.name,
+      originalName: file.name,
+      size: file.size,
+      type: file.type,
+      uploadDate: new Date(),
+      filePath: fileName,
+      textContent: textContent.substring(0, 1000) // Store first 1000 chars for preview
+    }
+
+    documents.push(newDocument)
+
     return NextResponse.json({
       success: true,
-      fileName,
+      document: newDocument,
       pages,
       textLength: textContent.length,
       message: 'File đã được tải lên và xử lý thành công'
@@ -96,6 +133,48 @@ export async function POST(request: NextRequest) {
     console.error('Upload error:', error)
     return NextResponse.json(
       { error: 'Có lỗi xảy ra khi tải lên file' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { id } = await request.json()
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Thiếu ID tài liệu' },
+        { status: 400 }
+      )
+    }
+
+    const documentIndex = documents.findIndex(doc => doc.id === id)
+    if (documentIndex === -1) {
+      return NextResponse.json(
+        { error: 'Không tìm thấy tài liệu' },
+        { status: 404 }
+      )
+    }
+
+    const document = documents[documentIndex]
+    
+    // Remove from list
+    documents.splice(documentIndex, 1)
+
+    // In a real app, you would also delete the physical files
+    // await unlink(join(process.cwd(), 'uploads', document.filePath))
+    // await unlink(join(process.cwd(), 'uploads', `${document.filePath}.txt`))
+
+    return NextResponse.json({
+      success: true,
+      message: 'Tài liệu đã được xóa thành công'
+    })
+
+  } catch (error) {
+    console.error('Delete error:', error)
+    return NextResponse.json(
+      { error: 'Có lỗi xảy ra khi xóa tài liệu' },
       { status: 500 }
     )
   }

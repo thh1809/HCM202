@@ -19,27 +19,23 @@ interface DocumentsModalProps {
 export default function DocumentsModal({ isOpen, onClose }: DocumentsModalProps) {
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState<string | null>(null)
+
+  const fetchDocuments = async () => {
+    try {
+      const response = await fetch('/api/documents')
+      const data = await response.json()
+      setDocuments(data.documents || [])
+    } catch (error) {
+      console.error('Error fetching documents:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (isOpen) {
-      // Mock data - trong thực tế sẽ fetch từ API
-      setDocuments([
-        {
-          id: '1',
-          name: 'Giao_trinh_Tu_tuong_Ho_Chi_Minh.pdf',
-          size: 2048576, // 2MB
-          uploadDate: new Date('2024-01-15'),
-          type: 'pdf'
-        },
-        {
-          id: '2',
-          name: 'Bai_tap_Tu_tuong_Ho_Chi_Minh.docx',
-          size: 1024000, // 1MB
-          uploadDate: new Date('2024-01-20'),
-          type: 'docx'
-        }
-      ])
-      setLoading(false)
+      fetchDocuments()
     }
   }, [isOpen])
 
@@ -55,8 +51,31 @@ export default function DocumentsModal({ isOpen, onClose }: DocumentsModalProps)
     return new Date(date).toLocaleDateString('vi-VN')
   }
 
-  const handleDelete = (id: string) => {
-    setDocuments(prev => prev.filter(doc => doc.id !== id))
+  const handleDelete = async (id: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) return
+
+    setDeleting(id)
+    try {
+      const response = await fetch('/api/documents', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      })
+
+      if (response.ok) {
+        setDocuments(prev => prev.filter(doc => doc.id !== id))
+      } else {
+        const data = await response.json()
+        alert(data.error || 'Có lỗi xảy ra khi xóa tài liệu')
+      }
+    } catch (error) {
+      console.error('Error deleting document:', error)
+      alert('Có lỗi xảy ra khi xóa tài liệu')
+    } finally {
+      setDeleting(null)
+    }
   }
 
   const handleDownload = (document: Document) => {
@@ -153,10 +172,15 @@ export default function DocumentsModal({ isOpen, onClose }: DocumentsModalProps)
                     </button>
                     <button
                       onClick={() => handleDelete(document.id)}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                      disabled={deleting === document.id}
+                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
                       title="Xóa tài liệu"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {deleting === document.id ? (
+                        <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
                 </div>

@@ -8,6 +8,7 @@ import UploadModal from '@/components/UploadModal'
 import DocumentsModal from '@/components/DocumentsModal'
 import SettingsModal from '@/components/SettingsModal'
 import HelpModal from '@/components/HelpModal'
+import Notification, { useNotifications } from '@/components/Notification'
 
 export default function Home() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
@@ -15,6 +16,7 @@ export default function Home() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { notifications, addNotification, removeNotification } = useNotifications()
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -45,6 +47,9 @@ export default function Home() {
       <UploadModal 
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
+        onUploadSuccess={() => {
+          addNotification('Tài liệu đã được tải lên thành công!', 'success')
+        }}
       />
       
       <DocumentsModal 
@@ -61,6 +66,16 @@ export default function Home() {
         isOpen={isHelpModalOpen}
         onClose={() => setIsHelpModalOpen(false)}
       />
+
+      {/* Notifications */}
+      {notifications.map((notification) => (
+        <Notification
+          key={notification.id}
+          message={notification.message}
+          type={notification.type}
+          onClose={() => removeNotification(notification.id)}
+        />
+      ))}
     </div>
   )
 }

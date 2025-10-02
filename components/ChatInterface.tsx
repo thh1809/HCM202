@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Bot, User, Loader2 } from 'lucide-react'
+import { Send, Bot, User, Loader2, MessageSquare } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import QuestionModal from './QuestionModal'
 
 interface Message {
   id: string
@@ -23,6 +24,8 @@ export default function ChatInterface() {
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
+  const [pendingQuestion, setPendingQuestion] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -64,6 +67,15 @@ export default function ChatInterface() {
         content: data.response || 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này.',
         role: 'assistant',
         timestamp: new Date()
+      }
+
+      // Check if AI suggests asking teacher
+      if (data.response && (
+        data.response.includes('hỏi giáo viên') || 
+        data.response.includes('không chắc chắn') ||
+        data.response.includes('không thể trả lời')
+      )) {
+        assistantMessage.content += '\n\n💡 **Gợi ý:** Nếu bạn cần câu trả lời chi tiết hơn, hãy gửi câu hỏi trực tiếp cho giáo viên!'
       }
 
       setMessages(prev => [...prev, assistantMessage])
@@ -191,8 +203,26 @@ export default function ChatInterface() {
           >
             💎 Đạo đức cách mạng
           </button>
+          <button
+            onClick={() => {
+              setPendingQuestion('')
+              setIsQuestionModalOpen(true)
+            }}
+            className="px-4 py-2 text-sm bg-orange-100 border border-orange-200 text-orange-700 rounded-full hover:bg-orange-200 transition-all duration-300 card-hover flex items-center space-x-1"
+            disabled={isLoading}
+          >
+            <MessageSquare className="h-3 w-3" />
+            <span>Gửi câu hỏi cho giáo viên</span>
+          </button>
         </div>
       </div>
+
+      {/* Question Modal */}
+      <QuestionModal 
+        isOpen={isQuestionModalOpen}
+        onClose={() => setIsQuestionModalOpen(false)}
+        initialQuestion={pendingQuestion}
+      />
     </div>
   )
 }

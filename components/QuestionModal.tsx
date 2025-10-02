@@ -1,20 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Send, User, Calendar } from 'lucide-react'
 
 interface QuestionModalProps {
   isOpen: boolean
   onClose: () => void
+  initialQuestion?: string
 }
 
-export default function QuestionModal({ isOpen, onClose }: QuestionModalProps) {
-  const [question, setQuestion] = useState('')
+export default function QuestionModal({ isOpen, onClose, initialQuestion }: QuestionModalProps) {
+  const [question, setQuestion] = useState(initialQuestion || '')
   const [studentName, setStudentName] = useState('')
   const [studentId, setStudentId] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [submitMessage, setSubmitMessage] = useState('')
+
+  // Update question when initialQuestion changes
+  useEffect(() => {
+    if (initialQuestion) {
+      setQuestion(initialQuestion)
+    }
+  }, [initialQuestion])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
